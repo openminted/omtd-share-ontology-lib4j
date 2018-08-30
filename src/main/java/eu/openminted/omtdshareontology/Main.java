@@ -1,5 +1,6 @@
 package eu.openminted.omtdshareontology;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -14,6 +15,21 @@ public class Main implements CommandLineRunner{
 
 	private static final Logger log = LoggerFactory.getLogger(GalaxyWrapperGeneratorMain.class);
 
+	String ontologyPath;
+	String toolsFolder;
+	String rootFolderAtGalaxyTools;
+	String toolBoxXML;
+	String parentClassInTheOntology;
+
+	private void setTest(){
+		ontologyPath = "/home/ilsp/Desktop/classificationComponentCalssification/ontology.xml";
+		parentClassInTheOntology = "http://w3id.org/meta-share/omtd-share/ComponentType";
+		
+		toolsFolder = "/home/ilsp/Desktop/classificationComponentCalssification/";
+		rootFolderAtGalaxyTools = "omtdTools";
+		toolBoxXML = "/home/ilsp/Desktop/classificationComponentCalssification/classification.xml";
+	}
+	
 	public static void main(String args[]){
 		
 		log.info("...");
@@ -23,24 +39,34 @@ public class Main implements CommandLineRunner{
 		app.run(args);
 		log.info("DONE!");
 	}
-
+	
 	@Override
 	public void run(String... args) throws Exception {
-		String ontologyPath = "/home/ilsp/Desktop/classificationComponentCalssification/ontology.xml";
-		//String rootFolderAtGalaxyTools = args[1];
-		String rootFolderAtGalaxyTools = "omtdTools";
-		String toolBoxXML = "/home/ilsp/Desktop/classificationComponentCalssification/classification.xml";
-		String parent = "http://w3id.org/meta-share/omtd-share/ComponentType";
+		ontologyPath = args[0];
+		parentClassInTheOntology = args[1];
+		
+		parentClassInTheOntology = args[2]; 
+		rootFolderAtGalaxyTools = args[3];
+		toolBoxXML = args[4];
+		
+		//setTest();
 		
 		OWLReader reader = new OWLReader();
 		reader.load(ontologyPath);
-		ArrayList<String> listOfFolders = reader.getClassificationItems(parent);
+		ArrayList<String> listOfFolders = reader.getClassificationItems(parentClassInTheOntology);
 		
 		GalaxySectionGenerator galaxySectionGenerator = new GalaxySectionGenerator();
 		for(int i = 0; i < listOfFolders.size(); i++){
 			String folderName = listOfFolders.get(i);
-			galaxySectionGenerator.addSection("omtd" + folderName, folderName, GalaxySectionGenerator.Dir_Type);
-			galaxySectionGenerator.addDir(rootFolderAtGalaxyTools + "/" + folderName);			
+			String sectionID = "omtd" + folderName;
+			String sectionName = folderName;
+			
+			galaxySectionGenerator.addSection(sectionID, sectionName, GalaxySectionGenerator.Dir_Type);
+			galaxySectionGenerator.addDir(rootFolderAtGalaxyTools + "/" + folderName);		
+			
+			String finalDirName = toolsFolder + "/" + rootFolderAtGalaxyTools + "/" + folderName;
+			File dir = new File(finalDirName);
+			dir.mkdirs();
 		}	
 
 		galaxySectionGenerator.write(toolBoxXML);		
