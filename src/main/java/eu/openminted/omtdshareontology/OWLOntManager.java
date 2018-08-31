@@ -2,16 +2,19 @@ package eu.openminted.omtdshareontology;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.reasoner.ConsoleProgressMonitor;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -26,9 +29,9 @@ import org.slf4j.LoggerFactory;
  * @author ilsp
  *
  */
-public class OWLReader {
+public class OWLOntManager {
 
-	public final static Logger logger = LoggerFactory.getLogger(OWLReader.class.getName());
+	public final static Logger logger = LoggerFactory.getLogger(OWLOntManager.class.getName());
 
 	private OWLOntologyManager manager = null;
 	private OWLOntology ontology = null;
@@ -41,7 +44,7 @@ public class OWLReader {
 	/**
 	 * Constructor
 	 */
-	public OWLReader() {
+	public OWLOntManager() {
 		manager = OWLManager.createOWLOntologyManager();
 		owlDataFactory = manager.getOWLDataFactory();
 		factory = new StructuralReasonerFactory();
@@ -71,17 +74,17 @@ public class OWLReader {
 		}
 	}
 	
-	private ArrayList<IRI> getSubClasses(IRI parentIRI){
+	private ArrayList<OWLClass> getSubClasses(IRI parentIRI){
 		currentLevel++;
 		OWLClass parent = owlDataFactory.getOWLClass(parentIRI);
-		ArrayList<IRI> subclassesList = new ArrayList<IRI>();
+		ArrayList<OWLClass> subclassesList = new ArrayList<OWLClass>();
 		
 		// Get subclasses
 		NodeSet<OWLClass> subClasses = reasoner.getSubClasses(parent, true);
 		Set<OWLClass> subClassesFlattened = subClasses.getFlattened();
 		for (OWLClass subcl : subClassesFlattened) {
 			System.out.println(" subclass" + subcl + " " + subcl.getIRI().getShortForm());
-			subclassesList.add(subcl.getIRI());
+			subclassesList.add(subcl);
 			
 			if(currentLevel + 1 <= maxLevel){
 				subclassesList.addAll(getSubClasses(subcl.getIRI()));
@@ -95,19 +98,36 @@ public class OWLReader {
 	private int currentLevel;
 	private int maxLevel;
 	
-	public ArrayList<String> getClassificationItems(String str){
-		ArrayList<String> foldersList = new ArrayList<String>();
+	public ArrayList<OWLClass> getClassificationItems(String str){
+		ArrayList<OWLClass> foldersList = new ArrayList<OWLClass>();
 		// Root class.
 		IRI parentIRI = IRI.create(str);
 		
 		currentLevel = 0;
 		maxLevel = 2;
-		ArrayList<IRI> allSubclasses = getSubClasses(parentIRI);
+		ArrayList<OWLClass> allSubclasses = getSubClasses(parentIRI);
 		
 		for(int i = 0; i < allSubclasses.size(); i++){
-			foldersList.add(allSubclasses.get(i).getShortForm());
+			foldersList.add(allSubclasses.get(i));
 		}
 		
 		return foldersList;
 	}
+	
+	public String getLabelOfOWLClass(OWLClass owlClass){
+		String ret = "";
+		
+		for(OWLAnnotationAssertionAxiom a : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
+		    if(a.getProperty().isLabel()) {
+		        if(a.getValue() instanceof OWLLiteral) {
+		            OWLLiteral val = (OWLLiteral) a.getValue();
+		            ret = val.getLiteral().toString();
+		        }
+		    }
+		}
+		
+		return ret;
+	}
+	
+
 }
