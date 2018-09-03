@@ -45,7 +45,9 @@ public class Main implements CommandLineRunner{
 		setTest();
 		
 		OWLOntManager ontMan = new OWLOntManager();
-		ontMan.load(ontologyPath);
+		//ontMan.load(ontologyPath);
+		ontMan.load();
+
 		SectionGen gen = new SectionGen(ontMan);
 		
 		ArrayList<OWLClass> listOfFolders = ontMan.getClassificationItems(parentClassInTheOntology);

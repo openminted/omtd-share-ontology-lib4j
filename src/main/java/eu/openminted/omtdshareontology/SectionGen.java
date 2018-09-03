@@ -2,6 +2,10 @@ package eu.openminted.omtdshareontology;
 
 import org.semanticweb.owlapi.model.OWLClass;
 
+/**
+ * @author ilsp
+ *
+ */
 public class SectionGen {
 
 	private OWLOntManager ontMan;
@@ -13,13 +17,17 @@ public class SectionGen {
 		this.ontMan = ontMan;
 	}
 	
+	public Section generate(String classIRI){
+		return generate(ontMan.getOWLClass(classIRI));
+	}
+	
 	public Section generate(OWLClass owlClass){
-		String folderPath = owlClass.getIRI().getShortForm();
-		String sectionID = idPrefix + folderPath;
+		String folder = owlClass.getIRI().getShortForm();
+		String sectionID = idPrefix + folder;
 		String sectionName = ontMan.getLabelOfOWLClass(owlClass);
 		
 		Section sec = new Section();
-		sec.setFolderPath(rootFolderAtGalaxyTools + "/" + folderPath);
+		sec.setFolderPath(rootFolderAtGalaxyTools + "/" + folder);
 		sec.setSectionID(sectionID);
 		sec.setSectionName(sectionName);
 		

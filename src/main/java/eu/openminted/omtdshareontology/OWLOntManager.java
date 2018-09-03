@@ -1,6 +1,7 @@
 package eu.openminted.omtdshareontology;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -70,8 +71,24 @@ public class OWLOntManager {
 				System.out.println("Does not exist:" + owlfileHandler.getAbsolutePath());
 			}
 		} catch (Exception e) {
+			logger.info("error:" + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	public void load(){
+		try{
+			InputStream inputStream = OWLOntManager.class.getResourceAsStream("/ontology.xml");
+			ontology = manager.loadOntologyFromOntologyDocument(inputStream);
+			reasoner =  factory.createReasoner(ontology, config);
+		}catch(Exception e){
+			logger.info("error:" + e.getMessage());
+		}
+	}
+	
+	public OWLClass getOWLClass(String IRI){
+		OWLClass owlIRI = owlDataFactory.getOWLClass(IRI);
+		return owlIRI;
 	}
 	
 	private ArrayList<OWLClass> getSubClasses(IRI parentIRI){
