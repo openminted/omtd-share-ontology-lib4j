@@ -52,6 +52,8 @@ public class OWLOntManager {
 		
 		progressMonitor = new ConsoleProgressMonitor();
 		config = new SimpleConfiguration(progressMonitor);
+		
+		logger.info("Initiated:" + OWLOntManager.class.getName());
 	}
 
 	/**
@@ -63,12 +65,12 @@ public class OWLOntManager {
 			File owlfileHandler = new File(fileName);
 
 			if (owlfileHandler.exists()) {
-				System.out.println("Loading:" + owlfileHandler.getAbsolutePath());
+				logger.info("Loading:" + owlfileHandler.getAbsolutePath());
 				ontology = manager.loadOntologyFromOntologyDocument(owlfileHandler);
 				reasoner =  factory.createReasoner(ontology, config);
 			} else {
 				ontology = null;
-				System.out.println("Does not exist:" + owlfileHandler.getAbsolutePath());
+				logger.info("Does not exist:" + owlfileHandler.getAbsolutePath());
 			}
 		} catch (Exception e) {
 			logger.info("error:" + e.getMessage());
@@ -78,9 +80,11 @@ public class OWLOntManager {
 	
 	public void load(){
 		try{
+			logger.info("Loading: /ontology.xml");
 			InputStream inputStream = OWLOntManager.class.getResourceAsStream("/ontology.xml");
 			ontology = manager.loadOntologyFromOntologyDocument(inputStream);
 			reasoner =  factory.createReasoner(ontology, config);
+			logger.info("Loaded: /ontology.xml");
 		}catch(Exception e){
 			logger.info("error:" + e.getMessage());
 		}
@@ -100,7 +104,7 @@ public class OWLOntManager {
 		NodeSet<OWLClass> subClasses = reasoner.getSubClasses(parent, true);
 		Set<OWLClass> subClassesFlattened = subClasses.getFlattened();
 		for (OWLClass subcl : subClassesFlattened) {
-			System.out.println(" subclass" + subcl + " " + subcl.getIRI().getShortForm());
+			logger.info(" subclass" + subcl + " " + subcl.getIRI().getShortForm());
 			subclassesList.add(subcl);
 			
 			if(currentLevel + 1 <= maxLevel){
