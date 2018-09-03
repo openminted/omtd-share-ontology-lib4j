@@ -3,6 +3,7 @@ package eu.openminted.omtdshareontology;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.apache.log4j.LogManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import eu.openminted.workflows.galaxy.GalaxyWrapperGeneratorMain;
 
 public class Main implements CommandLineRunner{
 
-	private static final Logger log = LoggerFactory.getLogger(GalaxyWrapperGeneratorMain.class);
+	private static final org.apache.log4j.Logger log = LogManager.getLogger(GalaxyWrapperGeneratorMain.class);
 
 	String ontologyPath;
 	String outputFolder;

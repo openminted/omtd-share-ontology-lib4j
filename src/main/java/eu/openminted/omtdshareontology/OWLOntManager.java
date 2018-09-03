@@ -3,14 +3,12 @@ package eu.openminted.omtdshareontology;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
-import org.eclipse.rdf4j.model.vocabulary.RDFS;
+import org.apache.log4j.LogManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -23,8 +21,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author ilsp
@@ -32,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OWLOntManager {
 
-	public final static Logger logger = LoggerFactory.getLogger(OWLOntManager.class.getName());
+	private static final org.apache.log4j.Logger logger = LogManager.getLogger(OWLOntManager.class.getName());
 
 	private OWLOntologyManager manager = null;
 	private OWLOntology ontology = null;
