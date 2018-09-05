@@ -38,6 +38,9 @@ public class OWLOntManager {
 	private ConsoleProgressMonitor progressMonitor;
 	private OWLReasonerConfiguration config;
 	
+	private String componentTypeClass = "http://w3id.org/meta-share/omtd-share/ComponentType";
+
+	
 	/**
 	 * Constructor
 	 */
@@ -115,13 +118,13 @@ public class OWLOntManager {
 	private int currentLevel;
 	private int maxLevel;
 	
-	public ArrayList<OWLClass> getClassificationItems(String str){
+	public ArrayList<OWLClass> getComponentTypeClassificationItems(){
 		ArrayList<OWLClass> foldersList = new ArrayList<OWLClass>();
 		// Root class.
-		IRI parentIRI = IRI.create(str);
+		IRI parentIRI = IRI.create(componentTypeClass);
 		
 		currentLevel = 0;
-		maxLevel = 2;
+		maxLevel = 5;
 		ArrayList<OWLClass> allSubclasses = getSubClasses(parentIRI);
 		
 		for(int i = 0; i < allSubclasses.size(); i++){
