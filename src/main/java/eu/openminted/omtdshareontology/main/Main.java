@@ -37,13 +37,13 @@ public class Main implements CommandLineRunner {
 	OMTDSHAREParser omtdShareParser;
 
 	private void setTest() {
-		ontologyPath = "/home/ilsp/Desktop/classificationComponentCalssification/ontology.xml";
+		ontologyPath = "/home/ilsp/Desktop/OMTDTemp/TDMCompClassification/ontology.xml";
 		//parentClassInTheOntology = "http://w3id.org/meta-share/omtd-share/ComponentType";
 
-		outputFolder = "/home/ilsp/Desktop/classificationComponentCalssification/";
-		toolBoxXML = "/home/ilsp/Desktop/classificationComponentCalssification/classification.xml";
+		outputFolder = "/home/ilsp/Desktop/OMTDTemp/TDMCompClassification";
+		toolBoxXML = "/home/ilsp/Desktop/OMTDTemp/TDMCompClassification/classification.xml";
 
-		oldFolders = "/home/ilsp/Desktop/classificationComponentCalssification/omtdToolsClfnByDS/";
+		oldFolders = "/home/ilsp/Desktop/OMTDTemp/TDMCompClassification/omtdToolsClfnByDS/";
 	}
 
 	public static void main(String args[]) {
@@ -62,7 +62,7 @@ public class Main implements CommandLineRunner {
 
 		init();
 		generateClassification();
-		assignAll(new File(oldFolders));
+		//assignAll(new File(oldFolders));
 	}
 
 	private void init() {
@@ -77,6 +77,7 @@ public class Main implements CommandLineRunner {
 
 	private void generateClassification() {
 		ArrayList<OWLClass> listOfFolders = ontMan.getComponentTypeClassificationItems();
+		System.out.println("size:" + listOfFolders.size());
 		for (int i = 0; i < listOfFolders.size(); i++) {
 			OWLClass owlClass = listOfFolders.get(i);
 			Section gs = gen.generate(owlClass);
@@ -85,6 +86,8 @@ public class Main implements CommandLineRunner {
 			galaxySectionGenerator.addDir(gs.getFolderPath());
 
 			String finalDirName = outputFolder + "/" + gs.getFolderPath();
+			//log.info("Creating dir:" + finalDirName);
+			System.out.println("Creating dir:" + finalDirName);
 			File dir = new File(finalDirName);
 			dir.mkdirs();
 		}
